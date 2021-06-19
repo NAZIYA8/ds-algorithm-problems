@@ -12,6 +12,10 @@
 
 package utility;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -348,6 +352,121 @@ public class Utility {
             System.out.print(array[i] + " ");
         }
         System.out.println();
+    }
+
+    /**
+     * This method is used to sort using merge sort technique.
+     *
+     * @param a    is the array which contains list of elements
+     * @param low  pointer
+     * @param high pointer
+     * @param <T>  is a type parameter used instead of specific data type.
+     */
+    public static <T extends Comparable<T>> void mergeSort(T a[], int low, int high) {
+        if (low < high) {
+            int mid = (low + high) / 2;
+            mergeSort(a, low, mid);
+            mergeSort(a, mid + 1, high);
+            merge(a, low, mid, high);
+        }
+    }
+
+    public static <T extends Comparable<T>> void merge(T a[], int start, int mid, int end) {
+        //stores the starting position of both parts in temporary variables.
+        int p = start, q = mid + 1;
+        Object[] arr1 = new Object[end - start + 1];
+        int k = 0;
+        for (int i = start; i <= end; i++) {
+            //checks if first part comes to an end or not .
+            if (p > mid) {
+                arr1[k++] = a[q++];
+            }
+            //checks if second part comes to an end or not
+            else if (q > end) {
+                arr1[k++] = a[p++];
+            }
+            //checks which part has smaller element.
+            else if (a[p].compareTo(a[q]) < 0) {
+                arr1[k++] = a[p++];
+            } else {
+                arr1[k++] = a[q++];
+            }
+        }
+        for (int l = 0; l < k; l++) {
+            a[start++] = (T) arr1[l];
+        }
+        System.out.println("After Sorting:");
+        for (int i = 0; i < a.length; i++) {
+            System.out.println(a[i]);
+        }
+    }
+
+
+    /**
+     * This method is used to read a file
+     */
+    public static FileReader fileRead(String string) {
+        FileReader f = null;
+        try {
+            f = new FileReader(string);
+        } catch (FileNotFoundException e) {
+
+            e.printStackTrace();
+        }
+        return f;
+    }
+
+
+    /**
+     * This method is used to perform binary search operation
+     *
+     * @param <T> is a type parameter used instead of specific data type.
+     */
+    public static <T extends Comparable<T>> void BinarySearch(T[] array, T search) {
+        int length = array.length;
+        int first = 0;
+        int last = length - 1;
+        int mid;
+
+        while (first <= last) {
+            mid = (first + last) / 2;
+            if (array[mid].compareTo(search) < 0) {
+                first = mid + 1;
+            } else if (array[mid].compareTo(search) == 0) {
+                System.out.println(search + " found in location " + mid);
+                break;
+            } else if (array[mid].compareTo(search) > 0) {
+                last = mid - 1;
+            }
+        }
+        if (first > last) {
+            System.out.println(search + "Not found");
+        }
+    }
+
+    /**
+     * This method is used to find a word from
+     * the file having a list of words
+     *
+     * @param file is having list of words
+     */
+    public static void findWord(FileReader file) {
+        BufferedReader bf = new BufferedReader(file);
+        String string;
+        String[] array = null;
+        try {
+            while ((string = bf.readLine()) != null) {
+                array = string.split(",");
+            }
+            for (int i = 0; i < array.length; i++) {
+                System.out.println(array[i]);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Enter the word to search:");
+        String search = Utility.inputString();
+        Utility.BinarySearch(array, search);
     }
 
 }
